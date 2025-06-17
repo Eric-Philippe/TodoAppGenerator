@@ -10,10 +10,10 @@ help: ## Affiche l'aide
 
 # Environnement de développement
 dev-build: ## Build les images Docker pour le développement
-	docker-compose -f docker-compose.dev.yml build
+	docker compose -f docker-compose.dev.yml build
 
 dev-up: ## Démarre l'environnement de développement
-	docker-compose -f docker-compose.dev.yml up -d
+	docker compose -f docker-compose.dev.yml up -d
 	@echo "🚀 Environnement de développement démarré!"
 	@echo "Frontend: http://localhost:3000"
 	@echo "API Gateway: http://localhost:5000"
@@ -22,33 +22,33 @@ dev-up: ## Démarre l'environnement de développement
 	@echo "PgAdmin: http://localhost:8080"
 
 dev-down: ## Arrête l'environnement de développement
-	docker-compose -f docker-compose.dev.yml down
+	docker compose -f docker-compose.dev.yml down
 
 dev-logs: ## Affiche les logs de développement
-	docker-compose -f docker-compose.dev.yml logs -f
+	docker compose -f docker-compose.dev.yml logs -f
 
 dev-restart: ## Redémarre l'environnement de développement
-	docker-compose -f docker-compose.dev.yml restart
+	docker compose -f docker-compose.dev.yml restart
 
 # Environnement de production
 prod-build: ## Build les images Docker pour la production
-	docker-compose build
+	docker compose build
 
 prod-up: ## Démarre l'environnement de production
-	docker-compose up -d
+	docker compose up -d
 	@echo "🚀 Environnement de production démarré!"
 	@echo "Application: http://localhost:3000"
 	@echo "API Gateway: http://localhost:5000"
 	@echo "PgAdmin: http://localhost:8080"
 
 prod-down: ## Arrête l'environnement de production
-	docker-compose down
+	docker compose down
 
 prod-logs: ## Affiche les logs de production
-	docker-compose logs -f
+	docker compose logs -f
 
 prod-restart: ## Redémarre l'environnement de production
-	docker-compose restart
+	docker compose restart
 
 # Commandes générales
 status: ## Affiche le statut des conteneurs
@@ -56,25 +56,25 @@ status: ## Affiche le statut des conteneurs
 	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 logs: ## Affiche tous les logs
-	docker-compose logs -f
+	docker compose logs -f
 
 clean: ## Nettoie les conteneurs, images et volumes non utilisés
-	docker-compose down -v
-	docker-compose -f docker-compose.dev.yml down -v
+	docker compose down -v
+	docker compose -f docker-compose.dev.yml down -v
 	docker system prune -f
 	docker volume prune -f
 
 clean-all: ## Nettoie complètement (ATTENTION: supprime tout)
-	docker-compose down -v --rmi all
-	docker-compose -f docker-compose.dev.yml down -v --rmi all
+	docker compose down -v --rmi all
+	docker compose -f docker-compose.dev.yml down -v --rmi all
 	docker system prune -af
 	docker volume prune -f
 
 # Base de données
 db-reset: ## Remet à zéro la base de données
-	docker-compose down postgres
+	docker compose down postgres
 	docker volume rm todoappgenerator_postgres_data todoappgenerator_postgres_dev_data 2>/dev/null || true
-	docker-compose up -d postgres
+	docker compose up -d postgres
 
 db-backup: ## Sauvegarde la base de données
 	@mkdir -p ./backups
@@ -106,21 +106,21 @@ install: ## Installation complète
 
 # Commandes de développement rapides
 restart-frontend: ## Redémarre uniquement le frontend
-	docker-compose -f docker-compose.dev.yml restart frontend-dev
+	docker compose -f docker-compose.dev.yml restart frontend-dev
 
 restart-api: ## Redémarre toutes les APIs
-	docker-compose -f docker-compose.dev.yml restart api-gateway-dev public-api-dev private-api-dev
+	docker compose -f docker-compose.dev.yml restart api-gateway-dev public-api-dev private-api-dev
 
 restart-db: ## Redémarre la base de données
-	docker-compose -f docker-compose.dev.yml restart postgres
+	docker compose -f docker-compose.dev.yml restart postgres
 
 # Maintenance
 update: ## Met à jour les images Docker
-	docker-compose pull
-	docker-compose -f docker-compose.dev.yml pull
+	docker compose pull
+	docker compose -f docker-compose.dev.yml pull
 
 rebuild: ## Rebuild complet
-	docker-compose down
-	docker-compose -f docker-compose.dev.yml down
-	docker-compose build --no-cache
-	docker-compose -f docker-compose.dev.yml build --no-cache
+	docker compose down
+	docker compose -f docker-compose.dev.yml down
+	docker compose build --no-cache
+	docker compose -f docker-compose.dev.yml build --no-cache

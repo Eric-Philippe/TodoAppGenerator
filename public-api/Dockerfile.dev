@@ -16,13 +16,18 @@ RUN npm install
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
+# Copier les fichiers restants
+COPY . .
+
 # Changer les permissions
 RUN chown -R nodejs:nodejs /app
+
+# Passer à l'utilisateur nodejs
 USER nodejs
 
 # Exposer le port et le port de debug
 EXPOSE 5050
 EXPOSE 9229
 
-# Commande de démarrage en mode développement
-CMD ["npm", "run", "serve"]
+# Commande de démarrage en mode développement (sans build)
+CMD ["npx", "nodemon", "--exec", "npx", "ts-node", "src/server.ts"]

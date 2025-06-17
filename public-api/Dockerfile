@@ -9,19 +9,21 @@ COPY package*.json ./
 # Installer les dépendances
 RUN npm ci --only=production
 
-# Copier le code source
-COPY . .
-
-# Build de l'application TypeScript
-RUN npm run build
-
 # Créer un utilisateur non-root
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
-# Changer les permissions
+# Copier le code source
+COPY . .
+
+# Changer les permissions avant le build
 RUN chown -R nodejs:nodejs /app
+
+# Passer à l'utilisateur nodejs
 USER nodejs
+
+# Build de l'application TypeScript
+RUN npm run build
 
 # Exposer le port
 EXPOSE 5050

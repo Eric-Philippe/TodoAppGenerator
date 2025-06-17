@@ -172,8 +172,8 @@ Pour changer les ports, modifiez les fichiers `docker-compose.yml` ou utilisez d
 make logs
 
 # Service spécifique
-docker-compose logs -f frontend
-docker-compose logs -f api-gateway
+docker compose logs -f frontend
+docker compose logs -f api-gateway
 ```
 
 ### Accès aux conteneurs
