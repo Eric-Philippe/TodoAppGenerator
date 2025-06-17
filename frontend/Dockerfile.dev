@@ -1,0 +1,27 @@
+# Frontend Development Dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Installer les dépendances système
+RUN apk add --no-cache curl
+
+# Copier les fichiers de dépendances
+COPY package*.json ./
+
+# Installer toutes les dépendances (dev incluses)
+RUN npm install
+
+# Créer un utilisateur non-root
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# Changer les permissions
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# Exposer le port Vite
+EXPOSE 5173
+
+# Commande de démarrage
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
