@@ -1,0 +1,109 @@
+/* Affichage de la structure de fichiers */
+.file-structure {
+  margin-bottom: 2rem;
+}
+
+.file-structure h4 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: #f1f5f9;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.file-tree {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+  max-height: 400px;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+}
+
+.file-node {
+  margin: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 0.3rem 0;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.file-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.file-item.expandable {
+  cursor: pointer;
+}
+
+.expand-icon {
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+  width: 12px;
+  text-align: center;
+}
+
+.expand-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.file-icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.file-name {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.file-item.folder .file-name {
+  color: #60a5fa;
+  font-weight: 500;
+}
+
+.file-children {
+  margin-left: 0;
+}
+
+/* Scrollbar personnalisée */
+.file-tree::-webkit-scrollbar {
+  width: 6px;
+}
+
+.file-tree::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.file-tree::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.file-tree::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .file-tree {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .file-name {
+    font-size: 0.8rem;
+  }
+}
