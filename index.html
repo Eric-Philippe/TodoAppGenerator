@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoApp Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+   
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 TodoApp Generator</h1>
+            <p>Générez votre application TodoList complète en quelques clics</p>
+        </div>
+
+        <div class="generator-card">
+            <form id="generatorForm">
+                <div class="form-grid">
+                    <!-- Configuration Backend -->
+                    <div class="form-section">
+                        <h3>Backend Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="backendLang">Langage Backend</label>
+                            <select id="backendLang" name="backendLang">
+                                <option value="node">Node.js</option>
+                                <option value="python">Python (FastAPI)</option>
+                                <option value="java">Java (Spring Boot)</option>
+                                <option value="csharp">C# (.NET)</option>
+                                <option value="go">Go (Gin)</option>
+                                <option value="php">PHP (Laravel)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="architecture">Architecture</label>
+                            <select id="architecture" name="architecture">
+                                <option value="mvc">MVC</option>
+                                <option value="clean">Clean Architecture</option>
+                                <option value="hexagonal">Hexagonal</option>
+                                <option value="layered">Layered Architecture</option>
+                                <option value="microservices">Microservices</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="database">Base de données</label>
+                            <select id="database" name="database">
+                                <option value="sqlite">SQLite</option>
+                                <option value="postgresql">PostgreSQL</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="mongodb">MongoDB</option>
+                                <option value="redis">Redis</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Frontend -->
+                    <div class="form-section">
+                        <h3>Frontend Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="frontendType">Type Frontend</label>
+                            <select id="frontendType" name="frontendType">
+                                <option value="mvp">MVP (Templates serveur)</option>
+                                <option value="spa">SPA (Single Page App)</option>
+                                <option value="ssr">SSR (Server Side Rendering)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="frontendFrameworkGroup">
+                            <label for="frontendFramework">Framework Frontend</label>
+                            <select id="frontendFramework" name="frontendFramework">
+                                <option value="react">React</option>
+                                <option value="vue">Vue.js</option>
+                                <option value="angular">Angular</option>
+                                <option value="svelte">Svelte</option>
+                                <option value="nextjs">Next.js</option>
+                                <option value="nuxt">Nuxt.js</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="styling">Styling</label>
+                            <select id="styling" name="styling">
+                                <option value="tailwind">Tailwind CSS</option>
+                                <option value="bootstrap">Bootstrap</option>
+                                <option value="material">Material UI</option>
+                                <option value="chakra">Chakra UI</option>
+                                <option value="css">CSS Vanilla</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Projet -->
+                    <div class="form-section">
+                        <h3>Configuration Projet</h3>
+                        
+                        <div class="form-group">
+                            <label for="projectName">Nom du projet</label>
+                            <input type="text" id="projectName" name="projectName" value="my-todo-app" placeholder="mon-super-todo">
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeAuth" name="includeAuth">
+                            <label for="includeAuth">Inclure l'authentification</label>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeTests" name="includeTests" checked>
+                            <label for="includeTests">Tests unitaires</label>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeDocker" name="includeDocker" checked>
+                            <label for="includeDocker">Docker Compose</label>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeCI" name="includeCI">
+                            <label for="includeCI">CI/CD (GitHub Actions)</label>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="includeAPI" name="includeAPI" checked>
+                            <label for="includeAPI">Documentation API</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="generate-btn">🎯 Générer l'application</button>
+            </form>
+
+            <div id="outputSection" class="output-section">
+                <h3>🎉 Votre TodoApp est prête !</h3>
+                <div id="techStack"></div>
+                <div id="fileStructure"></div>
+                <div id="instructions"></div>
+                <button class="download-btn" onclick="downloadProject()">📦 Télécharger le projet</button>
+                <button class="download-btn" onclick="copyToClipboard()">📋 Copier les instructions</button>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
