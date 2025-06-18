@@ -53,6 +53,18 @@ services:
     networks:
       - todo-network-dev
 
+  # PgAdmin (mode développement)
+  pgadmin-dev:
+    image: dpage/pgadmin4:latest
+    container_name: todo-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@todoapp.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    networks:
+      - todo-network-dev
+
   # API Gateway (mode développement)
   api-gateway-dev:
     build:
