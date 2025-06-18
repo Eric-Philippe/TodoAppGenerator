@@ -1,21 +1,53 @@
-version: "3.8"
-
 # Configuration Docker Compose pour le développement
 # Utilise des volumes pour le hot-reload et des ports exposés pour le debug
 
 services:
   # Base de données PostgreSQL
-  postgres:
+  postgres-intern:
     image: postgres:16-alpine
-    container_name: todo-postgres-dev
+    container_name: todo-postgres-intern-dev
     environment:
-      POSTGRES_DB: todoapp_dev
+      POSTGRES_DB: todoapp_generator_intern
       POSTGRES_USER: todouser
       POSTGRES_PASSWORD: todopassword
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
-      - postgres_dev_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
+      - postgres_intern_dev_data:/var/lib/postgresql/data
+      - ./database/intern/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+    networks:
+      - todo-network-dev
+
+  # Base de données PostgreSQL
+  postgres-user:
+    image: postgres:16-alpine
+    container_name: todo-postgres-user-dev
+    environment:
+      POSTGRES_DB: todoapp_generator_user
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_user_dev_data:/var/lib/postgresql/data
+      - ./database/user/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    networks:
+      - todo-network-dev
+
+  # Base de données PostgreSQL
+  postgres-config:
+    image: postgres:16-alpine
+    container_name: todo-postgres-config-dev
+    environment:
+      POSTGRES_DB: todoapp_generator_config
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_config_dev_data:/var/lib/postgresql/data
+      - ./database/config/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
@@ -39,7 +71,9 @@ services:
       - "5000:5000"
       - "9229:9229" # Port de debug Node.js
     depends_on:
-      - postgres
+      - postgres-intern
+      - postgres-user
+      - postgres-config
     networks:
       - todo-network-dev
 
@@ -60,7 +94,8 @@ services:
       - "5050:5050"
       - "9230:9229" # Port de debug Node.js
     depends_on:
-      - postgres
+      - postgres-user
+      - postgres-config
     networks:
       - todo-network-dev
 
@@ -81,7 +116,8 @@ services:
       - "5555:5555"
       - "9231:9229" # Port de debug Node.js
     depends_on:
-      - postgres
+      - postgres-intern
+      - postgres-config
     networks:
       - todo-network-dev
 
@@ -104,25 +140,12 @@ services:
       - todo-network-dev
     command: npm run dev -- --host 0.0.0.0
 
-  # PgAdmin pour l'administration de la base
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: todo-pgadmin-dev
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@todoapp.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    ports:
-      - "8080:80"
-    depends_on:
-      - postgres
-    networks:
-      - todo-network-dev
-    volumes:
-      - pgadmin_dev_data:/var/lib/pgadmin
-
 volumes:
-  postgres_dev_data:
+  postgres_intern_dev_data:
+    driver: local
+  postgres_user_dev_data:
+    driver: local
+  postgres_config_dev_data:
     driver: local
   pgadmin_dev_data:
     driver: local
