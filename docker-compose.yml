@@ -2,17 +2,64 @@ version: "3.8"
 
 services:
   # Base de données PostgreSQL
-  postgres:
+  postgres-intern:
     image: postgres:16-alpine
-    container_name: todo-postgres
+    container_name: todo-postgres-intern
     environment:
-      POSTGRES_DB: todoapp
+      POSTGRES_DB: todoapp_generator_intern
       POSTGRES_USER: todouser
       POSTGRES_PASSWORD: todopassword
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d
+      - postgres_intern_data:/var/lib/postgresql/data
+      - ./database/intern/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+    networks:
+      - todo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period:
+        40s
+
+        # Base de données PostgreSQL
+  postgres-user:
+    image: postgres:16-alpine
+    container_name: todo-postgres-user
+    environment:
+      POSTGRES_DB: todoapp_generator_user
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+      - ./database/user/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5434:5432"
+    networks:
+      - todo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Base de données PostgreSQL
+  postgres-config:
+    image: postgres:16-alpine
+    container_name: todo-postgres-config
+    environment:
+      POSTGRES_DB: todoapp_generator_config
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_config_data:/var/lib/postgresql/data
+      - ./database/config/init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
@@ -38,7 +85,11 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      postgres:
+      postgres-intern:
+        condition: service_healthy
+      postgres-user:
+        condition: service_healthy
+      postgres-config:
         condition: service_healthy
       public-api:
         condition: service_started
@@ -67,7 +118,9 @@ services:
     ports:
       - "5050:5050"
     depends_on:
-      postgres:
+      postgres-user:
+        condition: service_healthy
+      postgres-config:
         condition: service_healthy
     networks:
       - todo-network
@@ -92,7 +145,11 @@ services:
     ports:
       - "5555:5555"
     depends_on:
-      postgres:
+      postgres-intern:
+        condition: service_healthy
+      postgres-config:
+        condition: service_healthy
+      postgres-user:
         condition: service_healthy
     networks:
       - todo-network
@@ -125,26 +182,12 @@ services:
       retries: 3
       start_period: 40s
 
-  # PgAdmin pour l'administration de la base
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: todo-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@todoapp.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-    ports:
-      - "8080:80"
-    depends_on:
-      - postgres
-    networks:
-      - todo-network
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    restart: unless-stopped
-
 volumes:
-  postgres_data:
+  postgres_intern_data:
+    driver: local
+  postgres_user_data:
+    driver: local
+  postgres_config_data:
     driver: local
   pgadmin_data:
     driver: local
