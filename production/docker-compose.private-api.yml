@@ -1,0 +1,52 @@
+# Configuration Docker Compose pour l'API privée en production
+# Service API privée isolé
+
+services:
+  # API Privée
+  private-api:
+    build:
+      context: ../private-api
+      dockerfile: Dockerfile
+    container_name: todo-private-api-prod
+    environment:
+      PORT: 5555
+      NODE_ENV: production
+      DATABASE_INTERN_URL: postgresql://todouser:${POSTGRES_PASSWORD:-todopassword}@postgres-intern:5432/todoapp_generator_intern
+      DATABASE_CONFIG_URL: postgresql://todouser:${POSTGRES_PASSWORD:-todopassword}@postgres-config:5432/todoapp_generator_config
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      MAX_CONNECTIONS: ${MAX_CONNECTIONS:-100}
+    ports:
+      - "5555:5555"
+    networks:
+      - todo-api-network
+      - todo-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5555/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  todo-api-network:
+    external: true
+  todo-db-network:
+    external: true

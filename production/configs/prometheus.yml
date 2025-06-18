@@ -1,0 +1,56 @@
+# Configuration Prometheus pour TodoApp Generator
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+scrape_configs:
+  # Prometheus lui-même
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Node Exporter (métriques système)
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["node-exporter:9100"]
+
+  # cAdvisor (métriques des conteneurs)
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  # API Gateway
+  - job_name: "api-gateway"
+    static_configs:
+      - targets: ["api-gateway:5000"]
+    metrics_path: "/metrics"
+    scrape_interval: 10s
+
+  # API Publique
+  - job_name: "public-api"
+    static_configs:
+      - targets: ["public-api:5050"]
+    metrics_path: "/metrics"
+    scrape_interval: 10s
+
+  # API Privée
+  - job_name: "private-api"
+    static_configs:
+      - targets: ["private-api:5555"]
+    metrics_path: "/metrics"
+    scrape_interval: 10s
+
+  # PostgreSQL Exporter (optionnel, à ajouter si nécessaire)
+  # - job_name: 'postgres-exporter'
+  #   static_configs:
+  #     - targets: ['postgres-exporter:9187']

@@ -1,0 +1,46 @@
+# Configuration Docker Compose pour le frontend en production
+# Service frontend isolé
+
+services:
+  # Frontend
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: todo-frontend-prod
+    environment:
+      - VITE_API_URL=${API_GATEWAY_URL:-http://localhost:5000}
+      - VITE_APP_NAME=${APP_NAME:-TodoApp Generator}
+      - VITE_APP_VERSION=${APP_VERSION:-1.0.0}
+    ports:
+      - "3000:80"
+    networks:
+      - todo-frontend-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  todo-frontend-network:
+    external: true

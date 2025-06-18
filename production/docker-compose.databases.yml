@@ -1,0 +1,126 @@
+# Configuration Docker Compose pour les bases de données en production
+# Services de base de données isolés pour la production
+
+services:
+  # Base de données PostgreSQL - Interne
+  postgres-intern:
+    image: postgres:16-alpine
+    container_name: todo-postgres-intern-prod
+    environment:
+      POSTGRES_DB: todoapp_generator_intern
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todopassword}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_intern_prod_data:/var/lib/postgresql/data
+      - ../database/intern/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5434:5432"
+    networks:
+      - todo-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp_generator_intern"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+  # Base de données PostgreSQL - Utilisateur
+  postgres-user:
+    image: postgres:16-alpine
+    container_name: todo-postgres-user-prod
+    environment:
+      POSTGRES_DB: todoapp_generator_user
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todopassword}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_user_prod_data:/var/lib/postgresql/data
+      - ../database/user/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5433:5432"
+    networks:
+      - todo-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp_generator_user"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+  # Base de données PostgreSQL - Configuration
+  postgres-config:
+    image: postgres:16-alpine
+    container_name: todo-postgres-config-prod
+    environment:
+      POSTGRES_DB: todoapp_generator_config
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todopassword}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_config_prod_data:/var/lib/postgresql/data
+      - ../database/config/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - todo-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todouser -d todoapp_generator_config"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.5"
+        reservations:
+          memory: 256M
+          cpus: "0.25"
+
+volumes:
+  postgres_intern_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/todo_postgres_intern_prod
+  postgres_user_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/todo_postgres_user_prod
+  postgres_config_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/todo_postgres_config_prod
+
+networks:
+  todo-db-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
