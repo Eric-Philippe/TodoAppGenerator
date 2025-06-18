@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS languages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS backend_architectures (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
@@ -30,6 +32,7 @@ CREATE TABLE IF NOT EXISTS databases (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
@@ -40,6 +43,7 @@ CREATE TABLE IF NOT EXISTS frontend_architectures (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
@@ -50,6 +54,7 @@ CREATE TABLE IF NOT EXISTS frontend_frameworks (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
@@ -60,6 +65,7 @@ CREATE TABLE IF NOT EXISTS frontend_stylings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    required_tier INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     code VARCHAR(10) UNIQUE NOT NULL
