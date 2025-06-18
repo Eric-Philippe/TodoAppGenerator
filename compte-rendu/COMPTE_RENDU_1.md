@@ -28,6 +28,10 @@ TodoApp Generator est un outil web qui automatise la création d'applications To
 •✅ CI/CD avec GitHub Actions
 •✅ Documentation API automatique (Swagger/OpenAPI)
 
+## Comment lancer le projet ?
+
+Accéder à la section "Démarrage rapide" en dev dans le fichier [README.md](../README.docker.md) pour les instructions détaillées.
+
 ## Architecture
 
 ![Archi](../docs/TodoGeneratorV1.drawio.png)

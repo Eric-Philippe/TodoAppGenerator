@@ -140,7 +140,6 @@ docker-compose.override.yml
 .dockerignore
 
 # Database
-*.sql
 backups/
 pgdata/
 
