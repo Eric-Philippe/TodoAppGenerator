@@ -1,33 +1,25 @@
-# Private API Development Dockerfile
-FROM node:20-alpine
+# Development dockerfile for Go API with hot reload
+FROM golang:1.24-alpine AS builder
 
+# Install required build dependencies and air for hot reload
+RUN apk add --no-cache gcc musl-dev git
+RUN go install github.com/air-verse/air@latest
+
+# Set working directory
 WORKDIR /app
 
-# Installer les dépendances système
-RUN apk add --no-cache curl
+# Copy go.mod and go.sum first to leverage Docker cache
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Copier les fichiers de dépendances
-COPY package*.json ./
-
-# Installer toutes les dépendances (dev incluses)
-RUN npm install
-
-# Créer un utilisateur non-root
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
-# Copier les fichiers restants
+# Copy source code
 COPY . .
 
-# Changer les permissions
-RUN chown -R nodejs:nodejs /app
+# Ensure CGO is enabled for any dependencies that might need it
+ENV CGO_ENABLED=1
 
-# Passer à l'utilisateur nodejs
-USER nodejs
-
-# Exposer le port et le port de debug
+# Expose the port
 EXPOSE 5555
-EXPOSE 9229
 
-# Commande de démarrage en mode développement (sans build)
-CMD ["npx", "nodemon", "--exec", "npx", "ts-node", "src/server.ts"]
+# Use air for hot reload in development
+CMD ["air", "-c", ".air.toml"]

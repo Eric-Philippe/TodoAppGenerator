@@ -65,6 +65,18 @@ services:
     networks:
       - todo-network-dev
 
+  # Redis (mode développement)
+  redis-dev:
+    image: redis:7-alpine
+    container_name: todo-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - todo-network-dev
+    restart: unless-stopped
+
   # API Gateway (mode développement)
   api-gateway-dev:
     build:
@@ -118,18 +130,30 @@ services:
       dockerfile: Dockerfile.dev
     container_name: todo-private-api-dev
     environment:
-      PORT: 5555
-      NODE_ENV: development
-      DATABASE_URL: postgresql://todouser:todopassword@postgres:5432/todoapp_dev
+      API_PORT: 5555
+      ENV: development
+      POSTGRES_HOST: postgres-user
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: todouser
+      POSTGRES_PASSWORD: todopassword
+      POSTGRES_DB: todoapp_generator_user
+      CACHE_HOST: redis-dev
+      CACHE_PORT: 6379
+      CACHE_PASSWORD: ""
+      CACHE_DB: 0
+      JWT_SECRET: your-development-jwt-secret
+      CLIENT_URL: http://localhost:3000
+      ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
     volumes:
       - ./private-api:/app
-      - /app/node_modules
+      - go_modules_cache:/go/pkg/mod
     ports:
       - "5555:5555"
-      - "9231:9229" # Port de debug Node.js
     depends_on:
       - postgres-intern
       - postgres-config
+      - postgres-user
+      - redis-dev
     networks:
       - todo-network-dev
 
@@ -160,6 +184,10 @@ volumes:
   postgres_config_dev_data:
     driver: local
   pgadmin_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+  go_modules_cache:
     driver: local
 
 networks:
