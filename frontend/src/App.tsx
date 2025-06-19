@@ -1,50 +1,67 @@
-import { useState } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import "./App.css";
-import GeneratorForm from "./components/GeneratorForm";
-import OutputSection from "./components/OutputSection";
-import type { ProjectConfig, GeneratedProject } from "./types";
-import {
-  generateFileStructure,
-  generateInstructions,
-  generateTechStack,
-} from "./utils/projectGenerator";
+import HomePage from "./pages/HomePage";
+import Login from "./pages/Login";
+
+// Créer un thème MUI personnalisé
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#667eea",
+    },
+    secondary: {
+      main: "#764ba2",
+    },
+    background: {
+      default: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    },
+  },
+  typography: {
+    fontFamily:
+      '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          textTransform: "none",
+          fontWeight: 500,
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 8,
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+        },
+      },
+    },
+  },
+});
 
 function App() {
-  const [generatedProject, setGeneratedProject] =
-    useState<GeneratedProject | null>(null);
-
-  const handleGenerate = (config: ProjectConfig) => {
-    const project: GeneratedProject = {
-      techStack: generateTechStack(config),
-      fileStructure: generateFileStructure(config),
-      instructions: generateInstructions(config),
-    };
-
-    setGeneratedProject(project);
-  };
-
   return (
-    <div className="app-container">
-      {/* Header fixe en haut */}
-      <div className="header">
-        <h1>🚀 TodoApp Generator</h1>
-        <p>Générez votre application TodoList complète en quelques clics</p>
-      </div>
-
-      {/* Container principal pour les formulaires */}
-      <div className="main-container">
-        <div className="forms-container">
-          <GeneratorForm onGenerate={handleGenerate} />
-        </div>
-
-        {/* Section de sortie en pleine largeur */}
-        {generatedProject && (
-          <div className="output-container">
-            <OutputSection project={generatedProject} />
-          </div>
-        )}
-      </div>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<HomePage />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
