@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import "./App.css";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 // Créer un thème MUI personnalisé
 const theme = createTheme({
@@ -58,6 +59,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/*" element={<HomePage />} />
         </Routes>
       </Router>
