@@ -98,6 +98,33 @@ services:
           memory: 256M
           cpus: "0.25"
 
+  # Redis pour le cache
+  redis-prod:
+    image: redis:7-alpine
+    container_name: todo-redis-prod
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-""}
+    volumes:
+      - redis_prod_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - todo-db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.3"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
+
 volumes:
   postgres_intern_prod_data:
     driver: local
@@ -117,6 +144,12 @@ volumes:
       type: none
       o: bind
       device: /var/lib/docker/volumes/todo_postgres_config_prod
+  redis_prod_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/docker/volumes/todo_redis_prod
 
 networks:
   todo-db-network:

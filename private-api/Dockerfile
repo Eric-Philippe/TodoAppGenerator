@@ -1,32 +1,35 @@
-# Private API Dockerfile
-FROM node:20-alpine
+# Build stage
+FROM golang:1.24-alpine AS builder
+
+# Install required build dependencies
+RUN apk add --no-cache gcc musl-dev
+
+# Set working directory
+WORKDIR /build
+
+# Copy go.mod and go.sum first to leverage Docker cache
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the application with CGO enabled
+ENV CGO_ENABLED=1
+RUN go build -ldflags="-s -w" -o main .
+
+# Final stage - use minimal alpine image
+FROM alpine:3.19
+
+# Install CA certificates for HTTPS and any runtime dependencies
+RUN apk add --no-cache ca-certificates
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances
-COPY package*.json ./
+# Copy only the compiled binary from the build stage
+COPY --from=builder /build/main .
 
-# Installer les dépendances
-RUN npm ci --only=production
-
-# Créer un utilisateur non-root
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
-# Copier le code source
-COPY . .
-
-# Changer les permissions avant le build
-RUN chown -R nodejs:nodejs /app
-
-# Passer à l'utilisateur nodejs
-USER nodejs
-
-# Build de l'application TypeScript
-RUN npm run build
-
-# Exposer le port
 EXPOSE 5555
 
-# Commande de démarrage
-CMD ["npm", "start"]
+# Run the Go binary
+CMD ["./main"]
