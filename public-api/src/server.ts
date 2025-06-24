@@ -1,29 +1,59 @@
-import dotenv from "dotenv";
+import express, { Express } from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import path from "path";
+
+import { routes } from "./routes/routes";
+import { AppDataSource } from "./data-source";
+
+import * as dotenv from "dotenv";
+import { DB_HOST, DB_PORT, PORT } from "./env";
+import { Events } from "./Events";
+
 dotenv.config();
 
-import express, { Express, Request, Response, NextFunction } from "express";
-import httpProxy from "http-proxy";
-import cors from "cors";
-import { setupProxies } from "./proxy";
-import { ROUTES } from "./routes";
-
 const app: Express = express();
-const port = process.env.PORT || 5050;
-const apiProxy = httpProxy.createProxyServer();
 
 app.use(cors());
 
-app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.send("/ of Public API Gateway");
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-setupProxies(app, ROUTES);
+// Handle POST requests that come in formatted as JSON
+app.use(express.json({ limit: "50mb" }));
+app.use("/api", routes);
 
-app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
+const port = PORT || 3000;
 
+console.log(`[INFO] 🚀  Starting server on port ${port}`);
+console.log(
+  `[INFO] 📡  Connecting to Postgres Database on ${DB_HOST}:${DB_PORT}`
+);
 app.listen(port, () => {
-  console.log(`API Gateway is running at http://localhost:${port}`);
+  AppDataSource.initialize().then(() => {
+    app.emit(Events.APP_STARTED, port);
+  });
 });
+
+const readyHandler = async () => {};
+
+app.on(Events.APP_STARTED, () => {
+  const date = new Date();
+  const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  console.log(
+    `%c[INFO] %c${time} %c📠  Server listening on port ${port}`,
+    "color: #0077FF;",
+    "color: #66FF66;;",
+    "color: green;"
+  );
+  console.log(
+    `%c[INFO] %c${time} %c💾  Postgres Database Connected`,
+    "color: #0077FF;",
+    "color: #66FF66;;",
+    "color: green;"
+  );
+
+  readyHandler();
+});
+
+export default app;
