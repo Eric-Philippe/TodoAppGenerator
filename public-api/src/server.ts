@@ -5,6 +5,7 @@ import path from "path";
 
 import { routes } from "./routes/routes";
 import { AppDataSource } from "./data-source";
+import { setupSwagger } from "./config/swagger";
 
 import * as dotenv from "dotenv";
 import { DB_HOST, DB_PORT, PORT } from "./env";
@@ -21,6 +22,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Handle POST requests that come in formatted as JSON
 app.use(express.json({ limit: "50mb" }));
+
+// Setup Swagger documentation
+setupSwagger(app);
+
 app.use("/api", routes);
 
 const port = PORT || 3000;
