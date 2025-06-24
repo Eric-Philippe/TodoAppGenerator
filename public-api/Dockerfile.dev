@@ -9,25 +9,22 @@ RUN apk add --no-cache curl
 # Copier les fichiers de dépendances
 COPY package*.json ./
 
-# Installer toutes les dépendances (dev incluses)
-RUN npm install
-
-# Créer un utilisateur non-root
+# Créer un utilisateur non-root avant l'installation
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 
-# Copier les fichiers restants
-COPY . .
+# Installer toutes les dépendances (dev incluses)
+RUN npm install
 
-# Changer les permissions
-RUN chown -R nodejs:nodejs /app
+# Copier les fichiers restants avec le bon propriétaire
+COPY --chown=nodejs:nodejs . .
 
 # Passer à l'utilisateur nodejs
 USER nodejs
 
 # Exposer le port et le port de debug
-EXPOSE 5050
+EXPOSE 3001
 EXPOSE 9229
 
 # Commande de démarrage en mode développement (sans build)
-CMD ["npx", "nodemon", "--exec", "npx", "ts-node", "src/server.ts"]
+CMD ["npm", "run", "dev"]
