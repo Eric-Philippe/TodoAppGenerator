@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import "./App.css";
+import UpgradePage from "./pages/UpgradePage";
+import PaymentPage from "./pages/PaymentPage";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -61,6 +63,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/*" element={<HomePage />} />
+             <Route path="/upgrade" element={<UpgradePage />} />
+          <Route path="/payment/:planId" element={<PaymentPage />} />
+      
         </Routes>
       </Router>
     </ThemeProvider>

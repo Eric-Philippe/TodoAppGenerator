@@ -1,0 +1,35 @@
+.premium-icon {
+  display: inline-block;
+  position: relative;
+}
+
+.premium-diamond {
+  color: #f59e0b;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.premium-plus {
+  position: relative;
+  display: inline-block;
+}
+
+.premium-plus .premium-diamond {
+  color: #7c3aed;
+}
+
+.plus-sign {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: white;
+  color: #7c3aed;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}

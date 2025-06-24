@@ -1,0 +1,76 @@
+.premium-feature-box {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.premium-feature-box.locked {
+  cursor: pointer;
+}
+
+.premium-feature-box.locked:hover {
+  opacity: 0.9;
+}
+
+.premium-feature-box.disabled {
+  pointer-events: none;
+}
+
+/* Griser les éléments de formulaire verrouillés */
+.premium-feature-box.locked select,
+.premium-feature-box.locked input[type="text"],
+.premium-feature-box.locked input[type="email"],
+.premium-feature-box.locked input[type="password"],
+.premium-feature-box.locked textarea {
+  background-color: #f3f4f6 !important;
+  color: #9ca3af !important;
+  border-color: #d1d5db !important;
+  cursor: not-allowed !important;
+}
+
+.premium-feature-box.locked input[type="checkbox"] {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.premium-feature-box.locked label {
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+}
+
+/* Overlay pour les fonctionnalités verrouillées */
+.premium-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+  z-index: 10;
+}
+
+.lock-icon {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Animation pour attirer l'attention */
+@keyframes pulse-premium {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+
+.premium-feature-box.locked:hover .premium-overlay {
+  animation: pulse-premium 1s ease-out;
+}
