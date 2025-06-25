@@ -1,30 +1,27 @@
-# Public API Development Dockerfile
-FROM node:20-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Installer les dépendances système
-RUN apk add --no-cache curl
+# Install OpenSSL 3.0 and other required libraries for Prisma
+RUN apk add --no-cache openssl openssl-dev
 
-# Copier les fichiers de dépendances
+# Copy package files
 COPY package*.json ./
 
-# Créer un utilisateur non-root avant l'installation
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
-# Installer toutes les dépendances (dev incluses)
+# Install all dependencies (including dev dependencies)
 RUN npm install
 
-# Copier les fichiers restants avec le bon propriétaire
-COPY --chown=nodejs:nodejs . .
+# Copy prisma schema first
+COPY prisma ./prisma/
 
-# Passer à l'utilisateur nodejs
-USER nodejs
+# Generate Prisma client with correct binary targets
+RUN npx prisma generate
 
-# Exposer le port et le port de debug
+# Copy source code
+COPY . .
+
+# Expose port
 EXPOSE 3001
-EXPOSE 9229
 
-# Commande de démarrage en mode développement (sans build)
+# Start development server
 CMD ["npm", "run", "dev"]
