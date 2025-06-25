@@ -37,7 +37,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${port}`,
+        url: `http://localhost:5000/public`,
         description: "Development server",
       },
     ],
@@ -161,12 +161,10 @@ app.use(
 
 // 404 handler
 app.use("*", (req, res) => {
-  res
-    .status(404)
-    .json({
-      error: "Not Found",
-      message: "The requested resource was not found",
-    });
+  res.status(404).json({
+    error: "Not Found",
+    message: "The requested resource was not found",
+  });
 });
 
 // Graceful shutdown

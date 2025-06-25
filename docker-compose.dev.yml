@@ -121,7 +121,7 @@ services:
       - ./public-api:/app
       - /app/node_modules
     ports:
-      - ":5050"
+      - "5050:5050"
       - "9230:9229" # Port de debug Node.js
     depends_on:
       - postgres-user
