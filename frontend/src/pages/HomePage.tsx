@@ -23,10 +23,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="app-container">
-      <header className="header">
-        <h1>TodoApp Generator</h1>
-        <p>Générez votre application TodoList complète en quelques clics</p>
-      </header>
+     
 
       <main className="main-container">
         <div className="forms-container">

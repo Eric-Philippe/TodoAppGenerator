@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { PremiumProvider } from "./contexts/PremiumContext";
+import Header from "./components/Header";
 import "./App.css";
 import UpgradePage from "./pages/UpgradePage";
 import PaymentPage from "./pages/PaymentPage";
@@ -35,22 +37,6 @@ const theme = createTheme({
         },
       },
     },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 8,
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
   },
 });
 
@@ -58,16 +44,21 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/*" element={<HomePage />} />
-             <Route path="/upgrade" element={<UpgradePage />} />
-          <Route path="/payment/:planId" element={<PaymentPage />} />
-      
-        </Routes>
-      </Router>
+      <PremiumProvider>
+        <Router>
+          <div className="App">
+            <Header />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/generator" element={<HomePage />} />
+              <Route path="/upgrade" element={<UpgradePage />} />
+              <Route path="/payment/:planId" element={<PaymentPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
+        </Router>
+      </PremiumProvider>
     </ThemeProvider>
   );
 }

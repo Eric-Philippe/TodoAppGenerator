@@ -74,21 +74,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
       )}
 
       {/* Header avec statut premium */}
-      <div className="premium-status">
-        <div className="premium-info">
-          <PremiumIcon premiumLevel={userPremium.premiumLevel} size={24} />
-          <span className="premium-text">
-            {userPremium.premiumLevel === 0 && "Version Gratuite"}
-            {userPremium.premiumLevel === 1 && "Version Premium"}
-            {userPremium.premiumLevel === 2 && "Version Premium+"}
-          </span>
-        </div>
-        {userPremium.premiumLevel < 2 && (
-          <button className="upgrade-btn" onClick={handleUpgradeClick}>
-            ⬆️ {userPremium.premiumLevel === 0 ? "Upgrade vers Premium" : "Upgrade vers Premium+"}
-          </button>
-        )}
-      </div>
+     
 
       <form onSubmit={handleSubmit} className="generator-form">
         <div className="form-grid">
@@ -163,10 +149,10 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 </select>
               </div>
             </PremiumFeatureBox>
-          </div>
+        
 
           {/* Configuration Frontend */}
-          <div className="form-section">
+          
             <h3>🎨 Frontend Configuration</h3>
 
             <div className="form-group">
@@ -228,10 +214,10 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 <option value="css">CSS Vanilla</option>
               </select>
             </div>
-          </div>
+          
 
           {/* Configuration Projet */}
-          <div className="form-section">
+          
             <h3>⚙️ Configuration Projet</h3>
 
             <div className="form-group">
