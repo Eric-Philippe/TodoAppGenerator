@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { ProjectConfig } from "../types";
 import { usePremium } from "../hooks/usePremium";
+import {
+  getResources,
+  Resources,
+  type ResourceItem,
+} from "../services/ressourcesService";
 import PremiumFeatureBox from "./PremiumFeatureBox";
 import PremiumIcon from "./PremiumIcon";
 import "./GeneratorForm.css";
@@ -15,6 +20,22 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
   const navigate = useNavigate();
   const { userPremium, canAccess } = usePremium();
   const [showMessage, setShowMessage] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [resources, setResources] = useState<{
+    languages: ResourceItem[];
+    architectures: ResourceItem[];
+    databases: ResourceItem[];
+    frontendArchitectures: ResourceItem[];
+    frontendFrameworks: ResourceItem[];
+    frontendStylings: ResourceItem[];
+  }>({
+    languages: [],
+    architectures: [],
+    databases: [],
+    frontendArchitectures: [],
+    frontendFrameworks: [],
+    frontendStylings: [],
+  });
   const [config, setConfig] = useState<ProjectConfig>({
     backendLang: "node",
     architecture: "mvc",
@@ -39,6 +60,46 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    // Charger toutes les ressources au montage du composant
+    const loadResources = async () => {
+      try {
+        setLoading(true);
+        const [
+          languages,
+          architectures,
+          databases,
+          frontendArchitectures,
+          frontendFrameworks,
+          frontendStylings,
+        ] = await Promise.all([
+          getResources(Resources.BACKEND_LANGUAGES),
+          getResources(Resources.BACKEND_ARCHITECTURES),
+          getResources(Resources.DATABASES),
+          getResources(Resources.FRONTEND_ARCHITECTURES),
+          getResources(Resources.FRONTEND_FRAMEWORKS),
+          getResources(Resources.FRONTEND_STYLINGS),
+        ]);
+
+        setResources({
+          languages,
+          architectures,
+          databases,
+          frontendArchitectures,
+          frontendFrameworks,
+          frontendStylings,
+        });
+      } catch (error) {
+        console.error("Error loading resources:", error);
+        // En cas d'erreur, garder les valeurs par défaut
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResources();
+  }, []);
+
   const handleInputChange = (
     field: keyof ProjectConfig,
     value: string | boolean
@@ -53,19 +114,31 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
 
   const handleUpgradeClick = () => {
     // Rediriger vers la page d'upgrade premium
-    navigate('/upgrade');
+    navigate("/upgrade");
   };
 
   const shouldShowFramework = config.frontendType !== "mvp";
+
+  // Fonction pour filtrer les ressources selon le niveau premium de l'utilisateur
+  const getFilteredResources = (
+    resources: ResourceItem[],
+    premiumLevel: number
+  ) => {
+    if (canAccess(premiumLevel)) {
+      return resources;
+    }
+    // Si l'utilisateur n'a pas accès, ne montrer que les ressources gratuites
+    return resources.filter((resource) => resource.requiredTier === 0);
+  };
 
   return (
     <div className="generator-container">
       {/* Message de succès */}
       {showMessage && location.state?.message && (
-        <div className={`success-message ${location.state.type || 'info'}`}>
+        <div className={`success-message ${location.state.type || "info"}`}>
           <span>{location.state.message}</span>
-          <button 
-            className="close-message" 
+          <button
+            className="close-message"
             onClick={() => setShowMessage(false)}
           >
             ✕
@@ -74,7 +147,6 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
       )}
 
       {/* Header avec statut premium */}
-     
 
       <form onSubmit={handleSubmit} className="generator-form">
         <div className="form-grid">
@@ -87,14 +159,20 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
               <select
                 id="backendLang"
                 value={config.backendLang}
-                onChange={(e) => handleInputChange("backendLang", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("backendLang", e.target.value)
+                }
+                disabled={loading}
               >
-                <option value="node">Node.js</option>
-                <option value="python">Python (FastAPI)</option>
-                <option value="java">Java (Spring Boot)</option>
-                <option value="csharp">C# (.NET)</option>
-                <option value="go">Go (Gin)</option>
-                <option value="php">PHP (Laravel)</option>
+                {loading ? (
+                  <option>Chargement...</option>
+                ) : (
+                  resources.languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.name}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
 
@@ -106,7 +184,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
               <div className="form-group">
                 <label htmlFor="architecture">
                   Architecture
-                  <PremiumIcon premiumLevel={1} size={16} className="ml-2" />
+                  <PremiumIcon premiumLevel={1} size={16} />
                 </label>
                 <select
                   id="architecture"
@@ -114,13 +192,19 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                   onChange={(e) =>
                     handleInputChange("architecture", e.target.value)
                   }
-                  disabled={!canAccess(1)}
+                  disabled={!canAccess(1) || loading}
                 >
-                  <option value="mvc">MVC</option>
-                  <option value="clean">Clean Architecture</option>
-                  <option value="hexagonal">Hexagonal</option>
-                  <option value="layered">Layered Architecture</option>
-                  <option value="microservices">Microservices</option>
+                  {loading ? (
+                    <option>Chargement...</option>
+                  ) : (
+                    getFilteredResources(resources.architectures, 1).map(
+                      (arch) => (
+                        <option key={arch.code} value={arch.code}>
+                          {arch.name}
+                        </option>
+                      )
+                    )
+                  )}
                 </select>
               </div>
             </PremiumFeatureBox>
@@ -133,26 +217,31 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
               <div className="form-group">
                 <label htmlFor="database">
                   Base de données
-                  <PremiumIcon premiumLevel={2} size={16} className="ml-2" />
+                  <PremiumIcon premiumLevel={2} size={16} />
                 </label>
                 <select
                   id="database"
                   value={config.database}
-                  onChange={(e) => handleInputChange("database", e.target.value)}
-                  disabled={!canAccess(2)}
+                  onChange={(e) =>
+                    handleInputChange("database", e.target.value)
+                  }
+                  disabled={!canAccess(2) || loading}
                 >
-                  <option value="sqlite">SQLite</option>
-                  <option value="postgresql">PostgreSQL</option>
-                  <option value="mysql">MySQL</option>
-                  <option value="mongodb">MongoDB</option>
-                  <option value="redis">Redis</option>
+                  {loading ? (
+                    <option>Chargement...</option>
+                  ) : (
+                    getFilteredResources(resources.databases, 2).map((db) => (
+                      <option key={db.code} value={db.code}>
+                        {db.name}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
             </PremiumFeatureBox>
-        
 
-          {/* Configuration Frontend */}
-          
+            {/* Configuration Frontend */}
+
             <h3>🎨 Frontend Configuration</h3>
 
             <div className="form-group">
@@ -179,7 +268,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 <div className="form-group">
                   <label htmlFor="frontendFramework">
                     Framework Frontend
-                    <PremiumIcon premiumLevel={1} size={16} className="ml-2" />
+                    <PremiumIcon premiumLevel={1} size={16} />
                   </label>
                   <select
                     id="frontendFramework"
@@ -187,14 +276,19 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                     onChange={(e) =>
                       handleInputChange("frontendFramework", e.target.value)
                     }
-                    disabled={!canAccess(1)}
+                    disabled={!canAccess(1) || loading}
                   >
-                    <option value="react">React</option>
-                    <option value="vue">Vue.js</option>
-                    <option value="angular">Angular</option>
-                    <option value="svelte">Svelte</option>
-                    <option value="nextjs">Next.js</option>
-                    <option value="nuxt">Nuxt.js</option>
+                    {loading ? (
+                      <option>Chargement...</option>
+                    ) : (
+                      getFilteredResources(resources.frontendFrameworks, 1).map(
+                        (framework) => (
+                          <option key={framework.code} value={framework.code}>
+                            {framework.name}
+                          </option>
+                        )
+                      )
+                    )}
                   </select>
                 </div>
               </PremiumFeatureBox>
@@ -206,18 +300,22 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 id="styling"
                 value={config.styling}
                 onChange={(e) => handleInputChange("styling", e.target.value)}
+                disabled={loading}
               >
-                <option value="tailwind">Tailwind CSS</option>
-                <option value="bootstrap">Bootstrap</option>
-                <option value="material">Material UI</option>
-                <option value="chakra">Chakra UI</option>
-                <option value="css">CSS Vanilla</option>
+                {loading ? (
+                  <option>Chargement...</option>
+                ) : (
+                  resources.frontendStylings.map((styling) => (
+                    <option key={styling.code} value={styling.code}>
+                      {styling.name}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
-          
 
-          {/* Configuration Projet */}
-          
+            {/* Configuration Projet */}
+
             <h3>⚙️ Configuration Projet</h3>
 
             <div className="form-group">
@@ -226,7 +324,9 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 type="text"
                 id="projectName"
                 value={config.projectName}
-                onChange={(e) => handleInputChange("projectName", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("projectName", e.target.value)
+                }
                 placeholder="mon-super-todo"
               />
             </div>
@@ -248,31 +348,29 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 />
                 <label htmlFor="includeAuth">
                   Inclure l'authentification
-                  <PremiumIcon premiumLevel={1} size={14} className="ml-2" />
+                  <PremiumIcon premiumLevel={1} size={14} />
                 </label>
               </div>
             </PremiumFeatureBox>
-          <PremiumFeatureBox
+            <PremiumFeatureBox
               requiredPremiumLevel={1}
               userPremiumLevel={userPremium.premiumLevel}
               onUpgradeClick={handleUpgradeClick}
             >
-            <div className="checkbox-group">
-              <input
-                type="checkbox"
-                id="includeTests"
-                checked={config.includeTests}
-                onChange={(e) =>
-                  handleInputChange("includeTests", e.target.checked)
-                }
+              <div className="checkbox-group">
+                <input
+                  type="checkbox"
+                  id="includeTests"
+                  checked={config.includeTests}
+                  onChange={(e) =>
+                    handleInputChange("includeTests", e.target.checked)
+                  }
                   disabled={!canAccess(1)}
-              />
-              <label htmlFor="includeTests">Tests unitaires</label>
-               <PremiumIcon premiumLevel={1} size={14} className="ml-2" />
-             
-            </div>
-            
-          </PremiumFeatureBox>
+                />{" "}
+                <label htmlFor="includeTests">Tests unitaires</label>
+                <PremiumIcon premiumLevel={1} size={14} />
+              </div>
+            </PremiumFeatureBox>
 
             <PremiumFeatureBox
               requiredPremiumLevel={2}
@@ -306,7 +404,9 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                   type="checkbox"
                   id="includeCI"
                   checked={config.includeCI}
-                  onChange={(e) => handleInputChange("includeCI", e.target.checked)}
+                  onChange={(e) =>
+                    handleInputChange("includeCI", e.target.checked)
+                  }
                   disabled={!canAccess(2)}
                 />
                 <label htmlFor="includeCI">

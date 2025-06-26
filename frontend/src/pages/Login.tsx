@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Container,
   Box,
@@ -10,59 +10,61 @@ import {
   IconButton,
   Alert,
   Link,
-  Divider
-} from '@mui/material';
+  Divider,
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
   Email,
   Lock,
-  Login as LoginIcon
-} from '@mui/icons-material';
+  Login as LoginIcon,
+} from "@mui/icons-material";
+import { login } from "../services/authService";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
-    if (error) setError('');
+    if (error) setError("");
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     // Validation simple
     if (!formData.email || !formData.password) {
-      setError('Veuillez remplir tous les champs');
+      setError("Veuillez remplir tous les champs");
       setLoading(false);
       return;
     }
 
-    // Ici vous pourrez ajouter la logique de connexion
     try {
-      // TODO: Implémenter la logique de connexion
-      console.log('Tentative de connexion avec:', formData);
-      
-      // Simulation d'un délai de connexion
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // TODO: Rediriger vers la page principale
-      alert('Connexion simulée - TODO: implémenter la vraie logique');
+      console.log("Tentative de connexion avec:", formData);
+
+      const res = await login(formData.email, formData.password);
+      if (res) {
+        console.log("Connexion réussie:", res);
+        localStorage.setItem("token", res.token);
+        window.location.href = "/";
+      } else {
+        setError("Identifiants invalides");
+      }
     } catch (err) {
-      setError('Erreur lors de la connexion');
+      setError("Erreur lors de la connexion : " + (err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -76,28 +78,33 @@ const Login: React.FC = () => {
     <Container component="main" maxWidth="sm">
       <Box
         sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          py: 4
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          py: 4,
         }}
       >
         <Paper
           elevation={3}
           sx={{
             p: 4,
-            width: '100%',
+            width: "100%",
             borderRadius: 2,
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)'
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(10px)",
           }}
         >
           {/* Header */}
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <LoginIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-            <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <LoginIcon sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              fontWeight="bold"
+            >
               Connexion
             </Typography>
             <Typography variant="body1" color="text.secondary">
@@ -141,7 +148,7 @@ const Login: React.FC = () => {
               fullWidth
               name="password"
               label="Mot de passe"
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               value={formData.password}
@@ -176,24 +183,25 @@ const Login: React.FC = () => {
               sx={{
                 py: 1.5,
                 mb: 3,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)',
-                }
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                "&:hover": {
+                  background:
+                    "linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%)",
+                },
               }}
             >
-              {loading ? 'Connexion...' : 'Se connecter'}
+              {loading ? "Connexion..." : "Se connecter"}
             </Button>
 
             <Divider sx={{ my: 2 }} />
 
             {/* Links */}
-            <Box sx={{ textAlign: 'center' }}>
-              <Link href="#" variant="body2" sx={{ display: 'block', mb: 1 }}>
+            <Box sx={{ textAlign: "center" }}>
+              <Link href="#" variant="body2" sx={{ display: "block", mb: 1 }}>
                 Mot de passe oublié ?
               </Link>
               <Typography variant="body2" color="text.secondary">
-                Pas encore de compte ?{' '}
+                Pas encore de compte ?{" "}
                 <Link href="/register" underline="hover">
                   Créer un compte
                 </Link>
@@ -203,7 +211,12 @@ const Login: React.FC = () => {
         </Paper>
 
         {/* Footer */}
-        <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 4 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="center"
+          sx={{ mt: 4 }}
+        >
           © 2025 TodoApp Generator. Tous droits réservés.
         </Typography>
       </Box>

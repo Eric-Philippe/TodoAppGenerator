@@ -1,9 +1,9 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { usePremium } from '../contexts/PremiumContext';
-import { useScrollDirection } from '../hooks/useScrollDirection';
-import PremiumIcon from './PremiumIcon';
-import './Header.css';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { usePremium } from "../contexts/PremiumContext";
+import { useScrollDirection } from "../hooks/useScrollDirection";
+import PremiumIcon from "./PremiumIcon";
+import "./Header.css";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -46,10 +46,12 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className={`header ${isVisible ? 'header-visible' : 'header-hidden'}`}>
+    <header
+      className={`header ${isVisible ? "header-visible" : "header-hidden"}`}
+    >
       <div className="header-container">
         {/* Logo */}
-        <div className="header-logo" onClick={() => handleNavigation('/')}>
+        <div className="header-logo" onClick={() => handleNavigation("/")}>
           <div className="logo-icon">📝</div>
           <div className="logo-content">
             <h1 className="logo-title">TodoApp Generator</h1>
@@ -58,24 +60,35 @@ const Header: React.FC = () => {
 
         {/* Navigation */}
         <nav className="header-nav">
-          <button 
-            className={`nav-item ${isActive('/') || isActive('/generator') ? 'active' : ''}`}
-            onClick={() => handleNavigation('/')}
+          <button
+            className={`nav-item ${
+              isActive("/") || isActive("/generator") ? "active" : ""
+            }`}
+            onClick={() => handleNavigation("/")}
           >
             Générateur
           </button>
-          <button 
-            className={`nav-item ${isActive('/upgrade') ? 'active' : ''}`}
-            onClick={() => handleNavigation('/upgrade')}
+          <button
+            className={`nav-item ${isActive("/upgrade") ? "active" : ""}`}
+            onClick={() => handleNavigation("/upgrade")}
           >
             Plans
           </button>
-          <button 
-            className={`nav-item ${isActive('/login') ? 'active' : ''}`}
-            onClick={() => handleNavigation('/login')}
-          >
-            Connexion
-          </button>
+          {localStorage.getItem("token") != null ? (
+            <button
+              className={`nav-item ${isActive("/profile") ? "active" : ""}`}
+              onClick={() => handleNavigation("/profile")}
+            >
+              Profil
+            </button>
+          ) : (
+            <button
+              className={`nav-item ${isActive("/login") ? "active" : ""}`}
+              onClick={() => handleNavigation("/login")}
+            >
+              Connexion
+            </button>
+          )}
         </nav>
 
         {/* Status Premium */}
@@ -86,9 +99,15 @@ const Header: React.FC = () => {
               <span>Chargement...</span>
             </div>
           ) : (
-            <div className="status-premium" style={{ borderColor: getPremiumColor() }}>
+            <div
+              className="status-premium"
+              style={{ borderColor: getPremiumColor() }}
+            >
               <PremiumIcon premiumLevel={userPremium.premiumLevel} size={16} />
-              <span className="status-text" style={{ color: getPremiumColor() }}>
+              <span
+                className="status-text"
+                style={{ color: getPremiumColor() }}
+              >
                 {getPremiumLevelText()}
               </span>
             </div>

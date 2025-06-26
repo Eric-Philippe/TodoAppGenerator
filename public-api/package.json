@@ -9,7 +9,11 @@
     "dev": "tsx watch src/server.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "seed": "tsx prisma/seed.ts",
+    "db:seed": "prisma db seed",
+    "db:manage": "tsx scripts/manage-db.ts",
+    "db:setup": "./setup-db.sh"
   },
   "keywords": [
     "express",
@@ -19,6 +23,9 @@
   ],
   "author": "TodoApp Generator",
   "license": "MIT",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.7.1",
     "express": "^4.18.2",
