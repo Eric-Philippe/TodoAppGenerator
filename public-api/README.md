@@ -1,22 +1,46 @@
 # Public API
 
-This is the public-facing REST API for the Todo Application, built with Node.js, Express, and TypeScript.
+A TypeScript Express API with Swagger documentation and Prisma ORM for the TodoApp Generator.
 
 ## Features
 
-- **RESTful API** with Express.js
-- **TypeScript** for type safety
-- **PostgreSQL** database integration with TypeORM
-- **CORS** enabled for cross-origin requests
-- **Environment configuration** with dotenv
-- **Swagger/OpenAPI 3.0** documentation
-- **Docker** support for containerization
+- **TypeScript**: Full type safety and modern JavaScript features
+- **Express.js**: Fast, unopinionated web framework
+- **Prisma ORM**: Type-safe database access
+- **Swagger/OpenAPI**: Comprehensive API documentation
+- **CORS**: Cross-origin resource sharing enabled
+- **Security**: Helmet.js for security headers
+- **Logging**: Morgan for HTTP request logging
+
+## API Endpoints
+
+### Available Resources
+
+- **Languages** (`/api/v1/languages`)
+- **Backend Architectures** (`/api/v1/backend-architectures`)
+- **Databases** (`/api/v1/databases`)
+- **Frontend Architectures** (`/api/v1/frontend-architectures`)
+- **Frontend Frameworks** (`/api/v1/frontend-frameworks`)
+- **Frontend Stylings** (`/api/v1/frontend-stylings`)
+
+### Endpoint Patterns
+
+For each resource, the following endpoints are available:
+
+- `GET /api/v1/{resource}` - List all items with optional filtering
+- `GET /api/v1/{resource}/{id}` - Get specific item by UUID
+- `GET /api/v1/{resource}/code/{code}` - Get specific item by code
+
+### Query Parameters
+
+- `active`: Filter by active status (`true`/`false`)
+- `tier`: Filter by required tier (`0` = free, `1+` = premium)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js (v18 or higher)
 - PostgreSQL database
 - npm or yarn
 
@@ -24,161 +48,89 @@ This is the public-facing REST API for the Todo Application, built with Node.js,
 
 1. Install dependencies:
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 2. Set up environment variables:
 
-```bash
-cp .env.example .env
-# Edit .env with your database configuration
-```
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database connection string
+   ```
 
-3. Build the application:
+3. Generate Prisma client:
 
-```bash
-npm run build
-```
+   ```bash
+   npm run prisma:generate
+   ```
 
-4. Start the development server:
+4. Run database migrations (if needed):
+   ```bash
+   npm run prisma:migrate
+   ```
+
+### Development
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-The API will be available at `http://localhost:3000`
-
-## API Documentation
-
-### Swagger UI
-
-Interactive API documentation is available at:
-
-- **URL**: `http://localhost:3000/api-docs`
-- **Features**:
-  - Browse all available endpoints
-  - Test API endpoints directly in the browser
-  - View request/response schemas
-  - Download OpenAPI specification
-
-### OpenAPI Specification
-
-Raw OpenAPI 3.0 specification available at:
-
-- **URL**: `http://localhost:3000/api-docs.json`
-
-For detailed documentation guidelines, see [docs/swagger.md](./docs/swagger.md)
-
-## Available Scripts
-
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build TypeScript to JavaScript
-- `npm start` - Start production server
-- `npm run typeorm` - Run TypeORM schema synchronization
-
-## API Endpoints
-
-### Base URL
-
-- Development: `http://localhost:3000/api`
-
-### Available Endpoints
-
-#### API Information
-
-- `GET /api/v1` - Get API version and welcome message
-
-#### Health Check
-
-- `GET /api/v1/ping` - Health check endpoint (returns "pong")
-
-More endpoints will be documented as they are added. Check the Swagger documentation for the most up-to-date API reference.
-
-## Project Structure
-
-```
-src/
-├── config/
-│   └── swagger.ts          # Swagger/OpenAPI configuration
-├── routes/
-│   ├── routes.ts           # Main router configuration
-│   └── v1/
-│       ├── routesV1.ts     # Version 1 API routes
-│       └── ping/
-│           ├── pingRouter.ts
-│           └── getPing.ts
-├── data-source.ts          # TypeORM data source configuration
-├── env.ts                  # Environment variables
-├── Events.ts               # Application events
-└── server.ts               # Main application entry point
-```
-
-## Environment Variables
-
-| Variable      | Description       | Default     |
-| ------------- | ----------------- | ----------- |
-| `PORT`        | Server port       | `3000`      |
-| `DB_HOST`     | Database host     | `localhost` |
-| `DB_PORT`     | Database port     | `5432`      |
-| `DB_NAME`     | Database name     | -           |
-| `DB_USER`     | Database user     | -           |
-| `DB_PASSWORD` | Database password | -           |
-
-## Docker Support
-
-### Development
-
-```bash
-docker build -f Dockerfile.dev -t public-api:dev .
-docker run -p 3000:3000 public-api:dev
-```
+The API will be available at `http://localhost:3001`
 
 ### Production
 
+Build and start the production server:
+
 ```bash
-docker build -f Dockerfile -t public-api:prod .
-docker run -p 3000:3000 public-api:prod
+npm run build
+npm start
 ```
 
-## Contributing
+## API Documentation
 
-1. **Adding New Endpoints**
+Once the server is running, visit `http://localhost:3001/api-docs` to access the interactive Swagger documentation.
 
-   - Create route handlers in appropriate directories
-   - Add Swagger documentation using JSDoc comments
-   - Update route configurations
-   - Test endpoints using Swagger UI
+## Health Check
 
-2. **Code Style**
+Check API health at `GET /health`
 
-   - Use TypeScript for all new code
-   - Follow existing code structure and naming conventions
-   - Include proper error handling
+## Database Schema
 
-3. **Documentation**
-   - Document all new endpoints with Swagger
-   - Update README when adding major features
-   - Include examples in API documentation
+The API connects to the TodoApp configuration database with the following tables:
 
-## Dependencies
+- `languages` - Available programming languages
+- `backend_architectures` - Backend architecture options
+- `databases` - Database options
+- `frontend_architectures` - Frontend architecture options
+- `frontend_frameworks` - Frontend framework options
+- `frontend_stylings` - Frontend styling options
 
-### Runtime Dependencies
+Each table includes:
 
-- `express` - Web framework
-- `typeorm` - ORM for database operations
-- `pg` - PostgreSQL client
-- `cors` - CORS middleware
-- `dotenv` - Environment variable loading
-- `swagger-jsdoc` - OpenAPI spec generation
-- `swagger-ui-express` - Swagger UI serving
+- `id` (UUID) - Primary key
+- `name` - Display name
+- `description` - Optional description
+- `required_tier` - Access tier (0 = free, 1+ = premium)
+- `is_active` - Active status
+- `created_at` - Creation timestamp
+- `code` - Unique identifier code
 
-### Development Dependencies
+## Error Handling
 
-- `typescript` - TypeScript compiler
-- `ts-node-dev` - Development server with hot reload
-- `@types/*` - TypeScript type definitions
+The API returns structured error responses:
 
-## License
+```json
+{
+  "error": "Error Type",
+  "message": "Detailed error message"
+}
+```
 
-This project is licensed under the ISC License.
+Common HTTP status codes:
+
+- `200` - Success
+- `404` - Resource not found
+- `500` - Internal server error

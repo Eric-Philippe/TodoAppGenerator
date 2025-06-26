@@ -1,32 +1,28 @@
-# Public API Dockerfile
-FROM node:20-alpine
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copier les fichiers de dépendances
+# Copy package files
 COPY package*.json ./
 
-# Installer les dépendances
+# Install dependencies
 RUN npm ci --only=production
 
-# Créer un utilisateur non-root
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-
-# Copier le code source
+# Copy source code
 COPY . .
 
-# Changer les permissions avant le build
-RUN chown -R nodejs:nodejs /app
+# Generate Prisma client
+RUN npx prisma generate
 
-# Passer à l'utilisateur nodejs
-USER nodejs
-
-# Build de l'application TypeScript
+# Build the application
 RUN npm run build
 
-# Exposer le port
-EXPOSE 5050
+# Expose port
+EXPOSE 3001
 
-# Commande de démarrage
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
+
+# Start the application
 CMD ["npm", "start"]

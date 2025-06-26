@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Language {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("languages")
+}
+
+model BackendArchitecture {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("backend_architectures")
+}
+
+model Database {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("databases")
+}
+
+model FrontendArchitecture {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("frontend_architectures")
+}
+
+model FrontendFramework {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("frontend_frameworks")
+}
+
+model FrontendStyling {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  description  String?
+  requiredTier Int      @default(0) @map("required_tier")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  code         String   @unique @db.VarChar(10)
+
+  @@map("frontend_stylings")
+}

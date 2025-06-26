@@ -110,18 +110,18 @@ services:
     environment:
       PORT: 5050
       NODE_ENV: development
-      DB_HOST: postgres-user
+      DB_HOST: postgres-config
       DB_PORT: 5432
       DB_USER: todouser
       DB_PASSWORD: todopassword
-      DB_NAME: todoapp_generator_user
+      DB_NAME: todoapp_generator_config
+      DATABASE_URL: postgresql://todouser:todopassword@postgres-config:5432/todoapp_generator_config?schema=public
       SERVER_ADDRESS: http://localhost:5050
-      # DATABASE_URL: postgresql://todouser:todopassword@postgres:5432/todoapp_dev
     volumes:
       - ./public-api:/app
       - /app/node_modules
     ports:
-      - ":5050"
+      - "5050:5050"
       - "9230:9229" # Port de debug Node.js
     depends_on:
       - postgres-user
