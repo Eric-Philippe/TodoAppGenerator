@@ -131,7 +131,7 @@ const Login: React.FC = () => {
               autoFocus
               value={formData.email}
               onChange={handleChange}
-              error={error && !formData.email}
+              error={!!error && !formData.email}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -153,7 +153,7 @@ const Login: React.FC = () => {
               autoComplete="current-password"
               value={formData.password}
               onChange={handleChange}
-              error={error && !formData.password}
+              error={!!error && !formData.password}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

@@ -11,8 +11,8 @@ services:
     environment:
       PORT: 5050
       NODE_ENV: production
-      DATABASE_USER_URL: postgresql://todouser:${POSTGRES_PASSWORD:-todopassword}@postgres-user:5432/todoapp_generator_user
-      DATABASE_CONFIG_URL: postgresql://todouser:${POSTGRES_PASSWORD:-todopassword}@postgres-config:5432/todoapp_generator_config
+      # URL principale pour Prisma (utilisée dans schema.prisma)
+      DATABASE_URL: postgresql://todouser:${POSTGRES_PASSWORD:-todopassword}@postgres-config:5432/todoapp_generator_config
       LOG_LEVEL: ${LOG_LEVEL:-info}
       MAX_CONNECTIONS: ${MAX_CONNECTIONS:-100}
       RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-900000}
@@ -50,5 +50,7 @@ services:
 networks:
   todo-api-network:
     external: true
+    name: production_todo-api-network
   todo-db-network:
     external: true
+    name: production_todo-db-network

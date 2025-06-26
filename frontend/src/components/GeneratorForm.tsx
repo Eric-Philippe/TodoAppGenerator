@@ -389,7 +389,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 />
                 <label htmlFor="includeDocker">
                   Docker Compose
-                  <PremiumIcon premiumLevel={2} size={14} className="ml-2" />
+                  <PremiumIcon premiumLevel={2} size={14} />
                 </label>
               </div>
             </PremiumFeatureBox>
@@ -411,7 +411,7 @@ const GeneratorForm: React.FC<GeneratorFormProps> = ({ onGenerate }) => {
                 />
                 <label htmlFor="includeCI">
                   CI/CD (GitHub Actions)
-                  <PremiumIcon premiumLevel={2} size={14} className="ml-2" />
+                  <PremiumIcon premiumLevel={2} size={14} />
                 </label>
               </div>
             </PremiumFeatureBox>

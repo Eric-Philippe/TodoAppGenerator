@@ -55,10 +55,10 @@ router.get("/", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    res.json(languages);
+    return res.json(languages);
   } catch (error) {
     console.error("Error fetching languages:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch languages",
     });
@@ -114,10 +114,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(language);
+    return res.json(language);
   } catch (error) {
     console.error("Error fetching language:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch language",
     });
@@ -172,10 +172,10 @@ router.get("/code/:code", async (req, res) => {
       });
     }
 
-    res.json(language);
+    return res.json(language);
   } catch (error) {
     console.error("Error fetching language:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch language",
     });

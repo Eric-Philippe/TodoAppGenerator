@@ -55,10 +55,10 @@ router.get("/", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    res.json(databases);
+    return res.json(databases);
   } catch (error) {
     console.error("Error fetching databases:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch databases",
     });
@@ -114,10 +114,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(database);
+    return res.json(database);
   } catch (error) {
     console.error("Error fetching database:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch database",
     });
@@ -172,10 +172,10 @@ router.get("/code/:code", async (req, res) => {
       });
     }
 
-    res.json(database);
+    return res.json(database);
   } catch (error) {
     console.error("Error fetching database:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch database",
     });

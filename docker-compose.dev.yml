@@ -77,23 +77,25 @@ services:
       - todo-network-dev
     restart: unless-stopped
 
-  # API Gateway (mode développement)
+  # API Gateway Go (mode développement)
   api-gateway-dev:
     build:
-      context: ./api-gateway
+      context: ./api-gateway-go
       dockerfile: Dockerfile.dev
-    container_name: todo-api-gateway-dev
+    container_name: todo-api-gateway-go-dev
     environment:
       PORT: 5000
-      NODE_ENV: development
+      ENVIRONMENT: development
       PUBLIC_API_URL: http://public-api-dev:5050
       PRIVATE_API_URL: http://private-api-dev:5555
+      LOG_LEVEL: debug
+      RATE_LIMIT_MAX: 100
+      RATE_LIMIT_WINDOW: 60
     volumes:
-      - ./api-gateway:/app
-      - /app/node_modules
+      - ./api-gateway-go:/app
+      - go_gateway_modules_cache:/go/pkg/mod
     ports:
       - "5000:5000"
-      - "9229:9229" # Port de debug Node.js
     depends_on:
       - postgres-intern
       - postgres-user
@@ -189,11 +191,13 @@ volumes:
     driver: local
   postgres_config_dev_data:
     driver: local
-  pgadmin_dev_data:
+  pgladmin_dev_data:
     driver: local
   redis_dev_data:
     driver: local
   go_modules_cache:
+    driver: local
+  go_gateway_modules_cache:
     driver: local
 
 networks:

@@ -1,0 +1,22 @@
+# Development Dockerfile
+FROM golang:1.24-alpine
+
+WORKDIR /app
+
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@latest
+
+# Copy go mod files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 5000
+
+# Use air for hot reloading in development
+CMD ["air"]

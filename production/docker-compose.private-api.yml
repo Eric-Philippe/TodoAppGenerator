@@ -29,8 +29,6 @@ services:
     networks:
       - todo-api-network
       - todo-db-network
-    depends_on:
-      - redis-prod
     restart: unless-stopped
     healthcheck:
       test:
@@ -67,5 +65,7 @@ services:
 networks:
   todo-api-network:
     external: true
+    name: production_todo-api-network
   todo-db-network:
     external: true
+    name: production_todo-db-network

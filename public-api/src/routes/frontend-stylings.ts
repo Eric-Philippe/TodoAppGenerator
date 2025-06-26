@@ -55,10 +55,10 @@ router.get("/", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    res.json(stylings);
+    return res.json(stylings);
   } catch (error) {
     console.error("Error fetching frontend stylings:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend stylings",
     });
@@ -114,10 +114,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(styling);
+    return res.json(styling);
   } catch (error) {
     console.error("Error fetching frontend styling:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend styling",
     });
@@ -172,10 +172,10 @@ router.get("/code/:code", async (req, res) => {
       });
     }
 
-    res.json(styling);
+    return res.json(styling);
   } catch (error) {
     console.error("Error fetching frontend styling:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend styling",
     });

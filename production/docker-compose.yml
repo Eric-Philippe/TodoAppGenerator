@@ -17,6 +17,7 @@ networks:
   # Réseau pour la communication entre APIs
   todo-api-network:
     driver: bridge
+    name: production_todo-api-network
     ipam:
       config:
         - subnet: 172.22.0.0/24
@@ -24,10 +25,12 @@ networks:
   # Réseau pour la communication frontend-gateway
   todo-frontend-network:
     driver: bridge
+    name: production_todo-frontend-network
     ipam:
       config:
         - subnet: 172.24.0.0/24
 
   # Réseau pour la communication avec les bases de données
   todo-db-network:
-    external: true # Créé par docker-compose.databases.yml
+    external: true
+    name: production_todo-db-network

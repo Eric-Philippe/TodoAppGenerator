@@ -64,8 +64,10 @@ prod-build: ## Build les images Docker pour la production
 
 prod-up: ## Démarre l'environnement de production complet
 	@echo "🚀 Démarrage de l'environnement de production..."
-	cd production && docker compose -f docker-compose.yml up -d
 	cd production && docker compose -f docker-compose.databases.yml up -d
+	@echo "⏳ Attente de l'initialisation des bases de données (10s)..."
+	sleep 10
+	cd production && docker compose -f docker-compose.yml up -d
 	@echo "⏳ Attente de l'initialisation des bases de données (30s)..."
 	sleep 30
 	cd production && docker compose -f docker-compose.private-api.yml up -d

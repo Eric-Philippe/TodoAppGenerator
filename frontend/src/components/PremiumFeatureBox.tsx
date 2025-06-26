@@ -1,6 +1,5 @@
-import React from 'react';
-import PremiumIcon from './PremiumIcon';
-import './PremiumFeatureBox.css';
+import React from "react";
+import "./PremiumFeatureBox.css";
 
 interface PremiumFeatureBoxProps {
   children: React.ReactNode;
@@ -17,7 +16,7 @@ const PremiumFeatureBox: React.FC<PremiumFeatureBoxProps> = ({
   userPremiumLevel,
   onUpgradeClick,
   disabled = false,
-  className = '',
+  className = "",
 }) => {
   const canAccess = userPremiumLevel >= requiredPremiumLevel;
   const isLocked = !canAccess && !disabled;
@@ -32,8 +31,10 @@ const PremiumFeatureBox: React.FC<PremiumFeatureBoxProps> = ({
   };
 
   return (
-    <div 
-      className={`premium-feature-box ${isLocked ? 'locked' : ''} ${disabled ? 'disabled' : ''} ${className}`}
+    <div
+      className={`premium-feature-box ${isLocked ? "locked" : ""} ${
+        disabled ? "disabled" : ""
+      } ${className}`}
       onClick={handleClick}
     >
       {children}

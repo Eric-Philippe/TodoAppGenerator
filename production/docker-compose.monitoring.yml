@@ -161,5 +161,7 @@ networks:
         - subnet: 172.23.0.0/24
   todo-api-network:
     external: true
+    name: production_todo-api-network
   todo-db-network:
     external: true
+    name: production_todo-db-network

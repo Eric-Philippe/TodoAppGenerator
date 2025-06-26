@@ -44,3 +44,4 @@ services:
 networks:
   todo-frontend-network:
     external: true
+    name: production_todo-frontend-network

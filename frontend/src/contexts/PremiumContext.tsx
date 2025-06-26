@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 
 export interface UserPremium {
   premiumLevel: number;
@@ -20,7 +26,7 @@ const PremiumContext = createContext<PremiumContextType | undefined>(undefined);
 export const usePremium = () => {
   const context = useContext(PremiumContext);
   if (context === undefined) {
-    throw new Error('usePremium must be used within a PremiumProvider');
+    throw new Error("usePremium must be used within a PremiumProvider");
   }
   return context;
 };
@@ -29,8 +35,12 @@ interface PremiumProviderProps {
   children: ReactNode;
 }
 
-export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) => {
-  const [userPremium, setUserPremium] = useState<UserPremium>({ premiumLevel: 0 });
+export const PremiumProvider: React.FC<PremiumProviderProps> = ({
+  children,
+}) => {
+  const [userPremium, setUserPremium] = useState<UserPremium>({
+    premiumLevel: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,16 +49,16 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
 
   const fetchPremiumLevel = async () => {
     try {
-      console.log('Récupération du niveau premium...');
-      
+      console.log("Récupération du niveau premium...");
+
       // Pour l'instant, récupération depuis localStorage pour la démo
-      const storedLevel = localStorage.getItem('userPremiumLevel');
+      const storedLevel = localStorage.getItem("userPremiumLevel");
       const premiumLevel = storedLevel ? parseInt(storedLevel) : 0;
       console.log(`Niveau premium récupéré: ${premiumLevel}`);
-      
+
       setUserPremium({ premiumLevel });
     } catch (error) {
-      console.error('Erreur lors de la récupération du niveau premium:', error);
+      console.error("Erreur lors de la récupération du niveau premium:", error);
       setUserPremium({ premiumLevel: 0 });
     } finally {
       setLoading(false);
@@ -59,21 +69,21 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
     try {
       console.log(`Mise à jour du niveau premium vers: ${newLevel}`);
       setLoading(true);
-      
+
       // Simulation d'un appel API réussi
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Mise à jour locale (temporaire pour la démo)
-      localStorage.setItem('userPremiumLevel', newLevel.toString());
+      localStorage.setItem("userPremiumLevel", newLevel.toString());
       console.log(`Niveau premium sauvegardé en localStorage: ${newLevel}`);
-      
+
       // Mise à jour de l'état IMMÉDIATEMENT
       setUserPremium({ premiumLevel: newLevel });
       console.log(`État userPremium mis à jour: ${newLevel}`);
-      
+
       return true;
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du niveau premium:', error);
+      console.error("Erreur lors de la mise à jour du niveau premium:", error);
       return false;
     } finally {
       setLoading(false);
@@ -100,8 +110,6 @@ export const PremiumProvider: React.FC<PremiumProviderProps> = ({ children }) =>
   };
 
   return (
-    <PremiumContext.Provider value={value}>
-      {children}
-    </PremiumContext.Provider>
+    <PremiumContext.Provider value={value}>{children}</PremiumContext.Provider>
   );
 };

@@ -55,10 +55,10 @@ router.get("/", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    res.json(architectures);
+    return res.json(architectures);
   } catch (error) {
     console.error("Error fetching backend architectures:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch backend architectures",
     });
@@ -114,10 +114,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(architecture);
+    return res.json(architecture);
   } catch (error) {
     console.error("Error fetching backend architecture:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch backend architecture",
     });
@@ -172,10 +172,10 @@ router.get("/code/:code", async (req, res) => {
       });
     }
 
-    res.json(architecture);
+    return res.json(architecture);
   } catch (error) {
     console.error("Error fetching backend architecture:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch backend architecture",
     });

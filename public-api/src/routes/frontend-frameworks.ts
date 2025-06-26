@@ -55,10 +55,10 @@ router.get("/", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    res.json(frameworks);
+    return res.json(frameworks);
   } catch (error) {
     console.error("Error fetching frontend frameworks:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend frameworks",
     });
@@ -114,10 +114,10 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.json(framework);
+    return res.json(framework);
   } catch (error) {
     console.error("Error fetching frontend framework:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend framework",
     });
@@ -172,10 +172,10 @@ router.get("/code/:code", async (req, res) => {
       });
     }
 
-    res.json(framework);
+    return res.json(framework);
   } catch (error) {
     console.error("Error fetching frontend framework:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal Server Error",
       message: "Failed to fetch frontend framework",
     });
