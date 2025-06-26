@@ -49,3 +49,26 @@ export const getMyInformations = async (): Promise<AuthCheckRes | object> => {
     return {};
   }
 };
+
+export const logout = async () => {
+  const token = localStorage.getItem("token");
+  if (!token || token == "") return {};
+
+  const apiUrl = getPrivateUrl();
+
+  try {
+    const response = await axios.post(
+      `${apiUrl}/auth/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (e) {
+    console.error("Erreur lors de la déconnexion : ", e);
+    return {};
+  }
+};
