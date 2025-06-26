@@ -12,6 +12,7 @@ body {
   min-height: 100vh;
   color: #333;
   line-height: 1.6;
+  padding-top: 100px; /* Augmenter pour laisser plus d'espace */
 }
 
 /* Container principal de l'application */
@@ -72,6 +73,14 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+  body {
+    padding-top: 90px; /* Ajuster pour mobile */
+  }
+  
+  .App {
+    padding: 1.5rem 0;
+  }
+
   .main-container {
     padding: 1rem;
   }
@@ -91,5 +100,15 @@ body {
 
   .output-container {
     padding: 0 1rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding-top: 140px; /* Plus d'espace sur très petit écran */
+  }
+  
+  .App {
+    padding: 1rem 0;
   }
 }

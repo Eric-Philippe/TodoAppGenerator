@@ -1,30 +1,28 @@
 import React from 'react';
-import './PremiumIcon.css';
 
 interface PremiumIconProps {
-  premiumLevel: number; // 0 = Free, 1 = Premium, 2 = Premium+
+  premiumLevel: number;
   size?: number;
-  className?: string;
 }
 
-const PremiumIcon: React.FC<PremiumIconProps> = ({ 
-  premiumLevel, 
-  size = 20, 
-  className = '' 
-}) => {
-  if (premiumLevel === 0) return null;
-  
+const PremiumIcon: React.FC<PremiumIconProps> = ({ premiumLevel, size = 16 }) => {
+  const getIcon = () => {
+    switch (premiumLevel) {
+      case 0:
+        return '⚪'; // Gratuit - cercle blanc
+      case 1:
+        return '🟡'; // Premium - cercle jaune
+      case 2:
+        return '🟣'; // Premium+ - cercle violet
+      default:
+        return '⚪';
+    }
+  };
+
   return (
-    <div className={`premium-icon ${className}`} style={{ fontSize: `${size}px` }}>
-      {premiumLevel === 1 ? (
-        <span className="premium-diamond">💎</span>
-      ) : (
-        <div className="premium-plus">
-          <span className="premium-diamond">💎</span>
-          <span className="plus-sign">+</span>
-        </div>
-      )}
-    </div>
+    <span style={{ fontSize: `${size}px`, lineHeight: 1 }}>
+      {getIcon()}
+    </span>
   );
 };
 
